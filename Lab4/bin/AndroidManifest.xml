@@ -34,7 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="AddNewItemActivity"></activity>
+        <activity android:name="edu.towson.cis.cosc490.horan.lab4.AddNewItemActivity"></activity>
     </application>
 
 </manifest>

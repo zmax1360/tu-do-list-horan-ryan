@@ -87,7 +87,13 @@ public class MainActivity extends ListActivity {
  		
         if(null != data) {	 	
         	String item = data.getStringExtra("ITEM");
-        	mAdapter.add(item);
+        	String priority = data.getStringExtra("PRIORITY");
+        	String finished = data.getStringExtra("FINISHED");
+        	if(finished.equalsIgnoreCase("TRUE"))
+                mAdapter.add("FINISHED: " + item);
+            else
+                mAdapter.add(priority + ": " + item);
+        }
         }
  	}
-}
+
