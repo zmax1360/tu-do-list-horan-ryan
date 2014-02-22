@@ -2,15 +2,18 @@ package edu.towson.cis.cosc490.horan.lab4;
 
 import java.util.ArrayList;
 
-import edu.towson.cis.cosc490.jdehlinger.lab3solution.R;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import edu.towson.cis.cosc490.jdehlinger.lab3solution.R;
 
 public class MainActivity extends ListActivity {
     ArrayAdapter<String> mAdapter;
@@ -19,7 +22,7 @@ public class MainActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+        registerForContextMenu(getListView());
         // Set up ListView example
         ArrayList<String> items = new ArrayList<String>();
         items.add("Finish Lab 4");
@@ -58,18 +61,7 @@ public class MainActivity extends ListActivity {
         // we don't look for swipes.
         listView.setOnScrollListener(touchListener.makeScrollListener());
         
-        listView.setLongClickable(true);
-        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-        	public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-        		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-             	smsIntent.putExtra("sms_body", "TU-Do List Item: " + mAdapter.getItem(position));
-             	smsIntent.putExtra("address", "8675309");
-             	smsIntent.setType("vnd.android-dir/mms-sms");
-             	
-             	startActivity(smsIntent);
-             	return true;
-             }
-         });
+        
         
         
     }
@@ -80,7 +72,38 @@ public class MainActivity extends ListActivity {
  	    Intent intentAddNewItem = new Intent(this,AddNewItemActivity.class);
  	    startActivityForResult(intentAddNewItem, 2);
  	}
- 	
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+        
+      }
+        
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId()) {
+        case R.id.item1:
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.putExtra("sms_body", "TU-Do List Item: " + mAdapter.getItem((int)info.id));
+                smsIntent.putExtra("address", "8675309");
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                startActivity(smsIntent);
+            return true;
+        case R.id.item2:
+                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, "cosc490spring2014@gmail.com");
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "New TU-DO Item");
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, mAdapter.getItem((int)info.id));
+
+                startActivity(emailIntent);
+            return true;
+        default:
+            return super.onContextItemSelected(item);
+        }
+    }
  	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
  		super.onActivityResult(requestCode, resultCode, data);
