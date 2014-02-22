@@ -18,4 +18,5 @@
     <string name="app_name">TU-Do List</string>
     <string name="heading_dismissable_views">Simple Views</string>
     <string name="heading_dismissable_list_view">Items:</string>
+    <color name="black">#000000</color>
 </resources>
